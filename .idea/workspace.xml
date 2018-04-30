@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="be358ed2-f26e-49d4-b206-b57a75918463" name="Default" comment="" />
+    <list default="true" id="be358ed2-f26e-49d4-b206-b57a75918463" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/venv/file.txt" beforeDir="false" afterPath="$PROJECT_DIR$/venv/file.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/mainas.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/mainas.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,8 +17,8 @@
       <file leaf-file-name="mainas.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/venv/mainas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="395" lean-forward="true" selection-start-line="395" selection-end-line="395" />
+            <state relative-caret-position="-2248">
+              <caret line="252" lean-forward="true" selection-start-line="252" selection-end-line="252" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -40,6 +43,9 @@
       <find>scan_f</find>
     </findStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -48,11 +54,12 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1802" />
-    <option name="y" value="-19" />
+    <option name="x" value="1910" />
+    <option name="y" value="-22" />
     <option name="width" value="1548" />
     <option name="height" value="867" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -128,14 +135,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1802" y="-19" width="1548" height="867" extended-state="0" />
+    <frame x="1910" y="-22" width="1548" height="867" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25065273" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33111703" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
@@ -178,13 +185,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/tkinter/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="2295" selection-start-line="2295" selection-end-line="2295" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/urllib3/fields.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="159">
@@ -192,10 +192,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/tkinter/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="2139" selection-start-line="2139" selection-end-line="2139" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/venv/mainas.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="395" lean-forward="true" selection-start-line="395" selection-end-line="395" />
+        <state relative-caret-position="-2248">
+          <caret line="252" lean-forward="true" selection-start-line="252" selection-end-line="252" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>

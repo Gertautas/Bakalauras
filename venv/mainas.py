@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 import pathlib
 import os
+import tkinter as tk
 
 
 class Application(Frame):
@@ -27,8 +28,11 @@ class Application(Frame):
             menu.add_cascade(label="File", menu=subMenu)
             subMenu.add_cascade(label="Scan file", command=lambda: Application.scan_file(self))
             subMenu.add_cascade(label="Import file", command=lambda : Application.choose_file(self))
+            subMenu.add_cascade(label="Test")
             subMenu.add_command(label="Exit", command=exit)
             subMenu.add_separator()
+
+            self.API_KEY = '0abb42dfe1d1103b87eb501f5a248380581ea03289f0b2bc165be458d8cef93e'
 
 
             Label(self, text="Pasirinkite stulpelius, kuriuos norite skanuoti: ").grid(row=1,column=0,sticky=W)
@@ -117,7 +121,7 @@ class Application(Frame):
 
             #button pradeti skanavima
             scan_button=Button(self, text="Select columns", width=12, command=lambda : Application.write_to_file_selected_columns(self))
-            scan_button.grid(row=9, column=5)
+            scan_button.grid(row=9, column=2)
 
             self.text = Text(self, width=35, height=5, wrap=WORD)
             self.text.grid(row=9, column=0, columnspan=2, sticky="nsew")
@@ -237,13 +241,16 @@ class Application(Frame):
         #print(self.fileName)
 
         url= 'https://www.virustotal.com/vtapi/v2/file/scan'
-        params={'apikey' : 'bc8a2e91c61c21839e082d2ae06399b1640c3e211f1e9e12e834fa83faede02a'}
+        params={'apikey' : self.API_KEY}
         files = {'file': (self.fileName, open(self.fileName,'rb'))}
         self.response_scan = requests.post(url, files=files, params=params)
-        #print(self.response.json())
-        self.text.insert(END, "File is scanning. Please wait...  + '\n' ")
+        print(self.response_scan.json())
+        self.text.insert(END, "File is scanning. Please wait... " + '\n')
         self.scanfile_data = self.response_scan.json()
         self.scanfile_data_permalink = self.scanfile_data['permalink']
+        self.scan_id_start_file_Scan = self.data['scan_id']
+        self.resource_start_file_Scan = self.data['resource']
+
 
         self.text.insert(END,"linkas: " + self.scanfile_data_permalink)
 
@@ -353,12 +360,12 @@ class Application(Frame):
             simplejson.dump(UID, self.f)
             self.f.write('\n' + '\n')
 
-        time.sleep(5)
+        time.sleep(2)
 
         self.text.insert(END, "Columns selected." + '\n')
 
         self.send_button = Button(self, text="Scan file! ", width=12, command= lambda: Application.start_file_scan(self))
-        self.send_button.grid(row=9, column=9)
+        self.send_button.grid(row=9, column=3)
 
         self.f.close()
 
@@ -375,7 +382,7 @@ class Application(Frame):
         self.a=self.s.replace('\\','/')
         #print(self.a)
         url = 'https://www.virustotal.com/vtapi/v2/file/scan'
-        params = {'apikey': 'bc8a2e91c61c21839e082d2ae06399b1640c3e211f1e9e12e834fa83faede02a'}
+        params = {'apikey': self.API_KEY}
         files = {'file': (self.a, open(self.a,'rb'))}
         self.response=requests.post(url, files=files, params=params)
         #print(self.response.json())
@@ -386,14 +393,356 @@ class Application(Frame):
 
         self.data = self.response.json()
         #print(self.data)
-        self.data_permalink = self.data['permalink']
+        self.data_permalink_start_file_Scan = self.data['permalink']
+        self.scan_id_start_file_Scan=self.data['scan_id']
+        self.resource_start_file_Scan=self.data['resource']
         #print(self.data_permalink)
         #print('linkas: ' + self.file_scan_permalink)
-        self.text.insert(END, 'linkas: ' + self.data_permalink)
+        self.text.insert(END, 'linkas: ' + self.data_permalink_start_file_Scan)
 
+        self.info_button1 = Button(self, text="Detailed info ", width=12, command = lambda : Application.test(self))
+        self.info_button1.grid(row=9, column=8)
 
+        root.mainloop()
 
+    def test(self):
 
+        self.root2 = tk.Tk()
+
+        params = {'apikey': self.API_KEY, 'resource': self.resource_start_file_Scan,
+                  'scan_id': self.scan_id_start_file_Scan}
+        headers = {
+            "Accept-Encoding": "gzip, deflate",
+            "User-Agent": "gzip, My Python request library example client or username"
+        }
+
+        self.response_test = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params,
+                                          headers=headers)
+        self.test_json_respose = self.response_test.json()
+        # print(self.test_json_respose)
+
+        self.response_antivirus_programs = [
+            'Bkav',
+            'MicroWorld-eScan',
+            'nProtect',
+            'CMC',
+            'CAT-QuickHeal',
+            'McAfee',
+            'MalwareBytes',
+            'VIPRE',
+            'SUPERAntiSpyware',
+            'TheHacker',
+            'K7GW',
+            'K7AntiVirus',
+            'Baidu',
+            'Babable',
+            'F-Prot',
+            'Symantec',
+            'ESET-NOD32',
+            'TrendMicro-HouseCall',
+            'Avast',
+            'ClamAV',
+            'Kaspersky',
+            'BitDefender',
+            'NANO-Antivirus',
+            'ViRobot',
+            'Tencent',
+            'Ad-Aware',
+            'Emsisoft',
+            'Comodo',
+            'F-Secure',
+            'DrWeb',
+            'Zillya',
+            'TrendMicro',
+            'McAfee-GW-Edition',
+            'Sophos',
+            'Paloalto',
+            'Cyren',
+            'Jiangmin',
+            'Webroot',
+            'Avira',
+            'Fortinet',
+            'Antiy-AVL',
+            'Kingsoft',
+            'Arcabit',
+            'AegisLab',
+            'AhnLab-V3',
+            'ZoneAlarm',
+            'Avast-Mobile',
+            'Microsoft',
+            'TotalDefense',
+            'ALYac',
+            'AVware',
+            'VBA32',
+            'Zoner',
+            'Rising',
+            'Yandex',
+            'Ikarus',
+            'GData',
+            'AVG',
+            'PANDA',
+            'Qihoo-360',
+        ]
+
+        self.variable = StringVar(self.root2)
+        self.variable.set(self.response_antivirus_programs[0])
+
+        self.w = OptionMenu(self.root2, self.variable, *self.response_antivirus_programs)
+        self.w.pack()
+
+        self.root2.title("Detailed info")
+        self.root2.geometry("700x200")
+        self.detailed_text = Text(self.root2, heigh=5, width=80)
+        self.detailed_text.pack()
+        self.detailed_text.insert(END, 'Select Antivirus program from the list')
+
+        self.detailed_button = Button(self.root2, text="Info", command=lambda: Application.detailed_info_filter(self))
+        self.detailed_button.pack()
+
+    def detailed_info_filter(self):
+
+        self.detailed_text.delete('1.0', END)
+
+        if self.variable.get() == 'Bkav':
+            self.bkav = self.test_json_respose['scans']['Bkav']
+            # print(self.bkav)
+            self.detailed_text.insert(END, self.bkav)
+
+        if self.variable.get() == 'MicroWorld-eScan':
+            self.micro_World_escan = self.test_json_respose['scans']['MicroWorld-eScan']
+            self.detailed_text.insert(END, self.micro_World_escan)
+
+        if self.variable.get() == 'nProtect':
+            self.nprotect = self.test_json_respose['scans']['nProtect']
+            self.detailed_text.insert(END, self.nprotect)
+
+        if self.variable.get() == 'CMC':
+            self.cmc = self.test_json_respose['scans']['CMC']
+            self.detailed_text.insert(END, self.cmc)
+
+        if self.variable.get() == 'CAT-QuickHeal':
+            self.cat_quickheal = self.test_json_respose['scans']['CAT-QuickHeal']
+            self.detailed_text.insert(END, self.cat_quickheal)
+
+        if self.variable.get() == 'McAfee':
+            self.mcafee = self.test_json_respose['scans']['McAfee']
+            self.detailed_text.insert(END, self.mcafee)
+
+        if self.variable.get() == 'Malwarebytes':
+            self.malwarebytes = self.test_json_respose['scans']['Malwarebytes']
+            self.detailed_text.insert(END, self.malwarebytes)
+
+        if self.variable.get() == 'VIPRE':
+            self.vipre = self.test_json_respose['scans']['VIPRE']
+            self.detailed_text.insert(END, self.vipre)
+
+        if self.variable.get() == 'SUPERAntiSpyware':
+            self.super_anti_spyware = self.test_json_respose['scans']['SUPERAntiSpyware']
+            self.detailed_text.insert(END, self.super_anti_spyware)
+
+        if self.variable.get() == 'TheHacker':
+            self.thehacker = self.test_json_respose['scans']['TheHacker']
+            self.detailed_text.insert(END, self.thehacker)
+
+        if self.variable.get() == 'K7GW':
+            self.k7gw = self.test_json_respose['scans']['K7GW']
+            self.detailed_text.insert(END, self.k7gw)
+
+        if self.variable.get() == 'K7AntiVirus':
+            self.k7antivirus = self.test_json_respose['scans']['K7AntiVirus']
+            self.detailed_text.insert(END, self.k7antivirus)
+
+        if self.variable.get() == 'Baidu':
+            self.baidu = self.test_json_respose['scans']['Baidu']
+            self.detailed_text.insert(END, self.baidu)
+
+        if self.variable.get() == 'Babable':
+            self.babable = self.test_json_respose['scans']['Babable']
+            self.detailed_text.insert(END, self.babable)
+
+        if self.variable.get() == 'F-Prot':
+            self.fprot = self.test_json_respose['scans']['F-Prot']
+            self.detailed_text.insert(END, self.fprot)
+
+        if self.variable.get() == 'Symantec':
+            self.symantec = self.test_json_respose['scans']['Symantec']
+            self.detailed_text.insert(END, self.symantec)
+
+        if self.variable.get() == 'ESET-NOD32':
+            self.eset_nod32 = self.test_json_respose['scans']['ESET-NOD32']
+            self.detailed_text.insert(END, self.eset_nod32)
+
+        if self.variable.get() == 'TrendMicro-HouseCall':
+            self.trencmicro_housecall = self.test_json_respose['scans']['TrendMicro-HouseCall']
+            self.detailed_text.insert(END, self.trencmicro_housecall)
+
+        if self.variable.get() == 'Avast':
+            self.avast = self.test_json_respose['scans']['Avast']
+            self.detailed_text.insert(END, self.avast)
+
+        if self.variable.get() == 'ClamAV':
+            self.clamav = self.test_json_respose['scans']['ClamAV']
+            self.detailed_text.insert(END, self.clamav)
+
+        if self.variable.get() == 'Kaspersky':
+            self.kaspersky = self.test_json_respose['scans']['Kaspersky']
+            self.detailed_text.insert(END, self.kaspersky)
+
+        if self.variable.get() == 'BitDefender':
+            self.bitdefender = self.test_json_respose['scans']['BitDefender']
+            self.detailed_text.insert(END, self.bitdefender)
+
+        if self.variable.get() == 'NANO-Antivirus':
+            self.nano_antivirus = self.test_json_respose['scans']['NANO-Antivirus']
+            self.detailed_text.insert(END, self.nano_antivirus)
+
+        if self.variable.get() == 'ViRobot':
+            self.virobot = self.test_json_respose['scans']['ViRobot']
+            self.detailed_text.insert(END, self.virobot)
+
+        if self.variable.get() == 'Tencent':
+            self.tencent = self.test_json_respose['scans']['Tencent']
+            self.detailed_text.insert(END, self.tencent)
+
+        if self.variable.get() == 'Ad-Aware':
+            self.adaware = self.test_json_respose['scans']['Ad-Aware']
+            self.detailed_text.insert(END, self.adaware)
+
+        if self.variable.get() == 'Emsisoft':
+            self.emsisoft = self.test_json_respose['scans']['Emsisoft']
+            self.detailed_text.insert(END, self.emsisoft)
+
+        if self.variable.get() == 'Comodo':
+            self.comodo = self.test_json_respose['scans']['Comodo']
+            self.detailed_text.insert(END, self.comodo)
+
+        if self.variable.get() == 'F-Secure':
+            self.f_Secure = self.test_json_respose['scans']['F-Secure']
+            self.detailed_text.insert(END, self.f_Secure)
+
+        if self.variable.get() == 'DrWeb':
+            self.drweb = self.test_json_respose['scans']['DrWeb']
+            self.detailed_text.insert(END, self.drweb)
+
+        if self.variable.get() == 'Zillya':
+            self.zillya = self.test_json_respose['scans']['Zillya']
+            self.detailed_text.insert(END, self.zillya)
+
+        if self.variable.get() == 'TrendMicro':
+            self.trendmicro = self.test_json_respose['scans']['TrendMicro']
+            self.detailed_text.insert(END, self.trendmicro)
+
+        if self.variable.get() == 'McAfee-GW-Edition':
+            self.mcafee_gw_edition = self.test_json_respose['scans']['McAfee-GW-Edition']
+            self.detailed_text.insert(END, self.mcafee_gw_edition)
+
+        if self.variable.get() == 'Sophos':
+            self.sophos = self.test_json_respose['scans']['Sophos']
+            self.detailed_text.insert(END, self.sophos)
+
+        if self.variable.get() == 'Paloalto':
+            self.paloalto = self.test_json_respose['scans']['Paloalto']
+            self.detailed_text.insert(END, self.paloalto)
+
+        if self.variable.get() == 'Cyren':
+            self.cyren = self.test_json_respose['scans']['Cyren']
+            self.detailed_text.insert(END, self.cyren)
+
+        if self.variable.get() == 'Jiangmin':
+            self.jiangmin = self.test_json_respose['scans']['Jiangmin']
+            self.detailed_text.insert(END, self.jiangmin)
+
+        if self.variable.get() == 'Webroot':
+            self.webroot = self.test_json_respose['scans']['Webroot']
+            self.detailed_text.insert(END, self.webroot)
+
+        if self.variable.get() == 'Avira':
+            self.avira = self.test_json_respose['scans']['Avira']
+            self.detailed_text.insert(END, self.avira)
+
+        if self.variable.get() == 'Fortinet':
+            self.fortinet = self.test_json_respose['scans']['Fortinet']
+            self.detailed_text.insert(END, self.fortinet)
+
+        if self.variable.get() == 'Antiy-AVL':
+            self.antiy_avl = self.test_json_respose['scans']['Antiy-AVL']
+            self.detailed_text.insert(END, self.antiy_avl)
+
+        if self.variable.get() == 'Kingsoft':
+            self.kingsoft = self.test_json_respose['scans']['Kingsoft']
+            self.detailed_text.insert(END, self.kingsoft)
+
+        if self.variable.get() == 'Arcabit':
+            self.arcabit = self.test_json_respose['scans']['Arcabit']
+            self.detailed_text.insert(END, self.arcabit)
+
+        if self.variable.get() == 'AegisLab':
+            self.aegislab = self.test_json_respose['scans']['AegisLab']
+            self.detailed_text.insert(END, self.aegislab)
+
+        if self.variable.get() == 'AhnLab-V3':
+            self.ahnlab_v3 = self.test_json_respose['scans']['AhnLab-V3']
+            self.detailed_text.insert(END, self.ahnlab_v3)
+
+        if self.variable.get() == 'ZoneAlarm':
+            self.zonealarm = self.test_json_respose['scans']['ZoneAlarm']
+            self.detailed_text.insert(END, self.zonealarm)
+
+        if self.variable.get() == 'Avast-Mobile':
+            self.avast_mobile = self.test_json_respose['scans']['Avast-Mobile']
+            self.detailed_text.insert(END, self.avast_mobile)
+
+        if self.variable.get() == 'Microsoft':
+            self.microsoft = self.test_json_respose['scans']['Microsoft']
+            self.detailed_text.insert(END, self.microsoft)
+
+        if self.variable.get() == 'TotalDefense':
+            self.totaldefense = self.test_json_respose['scans']['TotalDefense']
+            self.detailed_text.insert(END, self.totaldefense)
+
+        if self.variable.get() == 'ALYac':
+            self.alyac = self.test_json_respose['scans']['ALYac']
+            self.detailed_text.insert(END, self.alyac)
+
+        if self.variable.get() == 'AVware':
+            self.avware = self.test_json_respose['scans']['AVware']
+            self.detailed_text.insert(END, self.avware)
+
+        if self.variable.get() == 'VBA32':
+            self.vba32 = self.test_json_respose['scans']['VBA32']
+            self.detailed_text.insert(END, self.vba32)
+
+        if self.variable.get() == 'Zoner':
+            self.zoner = self.test_json_respose['scans']['Zoner']
+            self.detailed_text.insert(END, self.zoner)
+
+        if self.variable.get() == 'Rising':
+            self.rising = self.test_json_respose['scans']['Rising']
+            self.detailed_text.insert(END, self.rising)
+
+        if self.variable.get() == 'Yandex':
+            self.yandex = self.test_json_respose['scans']['Yandex']
+            self.detailed_text.insert(END, self.yandex)
+
+        if self.variable.get() == 'Ikarus':
+            self.ikarus = self.test_json_respose['scans']['Ikarus']
+            self.detailed_text.insert(END, self.ikarus)
+
+        if self.variable.get() == 'GData':
+            self.gdata = self.test_json_respose['scans']['GData']
+            self.detailed_text.insert(END, self.gdata)
+
+        if self.variable.get() == 'AVG':
+            self.avg = self.test_json_respose['scans']['AVG']
+            self.detailed_text.insert(END, self.avg)
+
+        if self.variable.get() == 'Panda':
+            self.panda = self.test_json_respose['scans']['Panda']
+            self.detailed_text.insert(END, self.panda)
+
+        if self.variable.get() == 'Qihoo-360':
+            self.qihoo_360 = self.test_json_respose['scans']['Qihoo-360']
+            self.detailed_text.insert(END, self.qihoo_360)
 
 
 root = Tk()
