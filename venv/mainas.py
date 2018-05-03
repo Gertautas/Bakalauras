@@ -376,13 +376,24 @@ class Application(Frame):
 
             self.text.insert(END, "Columns selected." + '\n')
 
-            self.send_button = Button(self, text="Scan file! ", width=12,
-                                      command=lambda: Application.start_file_scan(self))
+            self.send_button = Button(self, text="Scan file! ", width=12, command=lambda: Application.start_file_scan(self))
             self.send_button.grid(row=9, column=3)
             self.f.close()
 
         else:
             messagebox.showerror("Error", "Import file first!")
+
+
+    def detailed_hashes(self):
+
+        self.root3 = tk.Tk()
+
+        self.root3.title("Detailed info")
+        self.root3.geometry("700x200")
+        self.detailed_hashes_text = Text(self.root3, heigh=10, width=80)
+        self.detailed_hashes_text.pack()
+
+        self.detailed_hashes_text.insert(END, '\n'.join(self.hashes))
 
 
     def start_file_scan(self):
@@ -391,28 +402,24 @@ class Application(Frame):
 
         if os.path.isfile(self.f_ab):
             try:
-                self.hashes = re.findall(r"([a-fA-F\d]{32})", open(self.p).read().lower())
+                self.hashes = re.findall(r"([a-fA-F\d]{32})", open(self.f_ab).read().lower())
+                len(self.hashes)
                 print(self.hashes)
 
             except OSError as err:  # <- naked except is a bad idea
                 showerror("Something went wrong")
                 print("klaida cia ---> ".format(err))
 
-        self.text.insert(END, "File is scanning. Please wait... "  + '\n')
+        self.text.insert(END, "File is being checked. Please wait... "  + '\n')
 
-        #time.sleep(5)
+        time.sleep(2)
 
-        self.data = self.response.json()
-        #print(self.data)
-        self.data_permalink_start_file_Scan = self.data['permalink']
-        self.scan_id_start_file_Scan=self.data['scan_id']
-        self.resource_start_file_Scan=self.data['resource']
-        #print(self.data_permalink)
-        #print('linkas: ' + self.file_scan_permalink)
-        self.text.insert(END, 'linkas: ' + self.data_permalink_start_file_Scan)
+        self.text.insert(END, "Scanning done.")
 
-        self.info_button1 = Button(self, text="Detailed info ", width=12, command = lambda : Application.test(self))
-        self.info_button1.grid(row=9, column=8)
+
+
+        self.info_button2 = Button(self, text="Detailed info ", width=12, command = lambda : Application.detailed_hashes(self))
+        self.info_button2.grid(row=9, column=8)
 
         root.mainloop()
 
