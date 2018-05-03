@@ -11,6 +11,9 @@ from pathlib import Path
 import pathlib
 import os
 import tkinter as tk
+import re
+from tkinter import messagebox
+
 
 
 class Application(Frame):
@@ -33,6 +36,11 @@ class Application(Frame):
             subMenu.add_separator()
 
             self.API_KEY = '0abb42dfe1d1103b87eb501f5a248380581ea03289f0b2bc165be458d8cef93e'
+            self.f = pathlib.Path('file.txt')
+            self.f_ab = "";
+
+            if os.path.exists(self.f):
+                os.remove(self.f)
 
 
             Label(self, text="Pasirinkite stulpelius, kuriuos norite skanuoti: ").grid(row=1,column=0,sticky=W)
@@ -169,7 +177,11 @@ class Application(Frame):
                 self.t_stamp1 = columns['timestamp']
                 self.UNIQUE_ID1 = columns['uniqueid']
 
-
+                self.f = open('file.txt', 'w')
+                self.ff = pathlib.Path('file.txt')
+                self.f_a =str(self.ff.absolute())
+                self.f_ab = self.f_a.replace('\\','/')
+                print(self.f_ab)
 
             except OSError as err:  # <- naked except is a bad idea
                 showerror("Open Source File", "Failed to read file\n'%s'" % fname)
@@ -178,15 +190,8 @@ class Application(Frame):
 
     def update_text(self):
 
-        tekstas = ""
         if self.config_nr.get():
-            #cn=self.config_nr1
-            #cn=','.join(self.config_nr1)
-            #tekstas +=cn
             print(self.config_nr1)
-            #print(tekstas)
-            #print(self.config_nr.get())
-            #print(self.Base_adress.get())
         if self.Base_adress.get():
             #ba=','.join(self.Base_adress1)
             #tekstas +=ba
@@ -246,146 +251,152 @@ class Application(Frame):
         self.response_scan = requests.post(url, files=files, params=params)
         print(self.response_scan.json())
         self.text.insert(END, "File is scanning. Please wait... " + '\n')
-        self.scanfile_data = self.response_scan.json()
-        self.scanfile_data_permalink = self.scanfile_data['permalink']
+        self.data = self.response_scan.json()
+        self.scanfile_data_permalink = self.data['permalink']
         self.scan_id_start_file_Scan = self.data['scan_id']
         self.resource_start_file_Scan = self.data['resource']
 
 
         self.text.insert(END,"linkas: " + self.scanfile_data_permalink)
 
+        self.info_button1 = Button(self, text="Detailed info ", width=12, command=lambda: Application.test(self))
+        self.info_button1.grid(row=9, column=8)
+
+
+
 
     def write_to_file_selected_columns(self):
-        tekstas = ""
-        self.f = open('file.txt', 'w')
+        tekstas = "";
 
-        if self.config_nr.get()==True:
-            cn=self.config_nr1
-            cn=','.join(self.config_nr1)
-            tekstas +=cn
-            self.f.write(tekstas + '\n' + '\n')
+        print(self.f)
+        if os.path.isfile(self.f_ab):
 
-        if self.Base_adress.get()==True:
-            ba=self.Base_adress1
-            simplejson.dump(ba, self.f)
-            self.f.write('\n' + '\n')
+            if self.config_nr.get()==True:
+                cn=self.config_nr1
+                cn=','.join(self.config_nr1)
+                tekstas +=cn
+                self.f.write(tekstas + '\n' + '\n')
 
-        if self.Memory_sz.get()==True:
-            mz=self.Memory_sz1
-            simplejson.dump(mz, self.f)
-            self.f.write('\n' + '\n')
+            if self.Base_adress.get()==True:
+                ba=self.Base_adress1
+                simplejson.dump(ba, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_base_adress.get()==True:
-            pba=self.proc_base_adress1
-            simplejson.dump(pba, self.f)
-            self.f.write('\n' + '\n')
+            if self.Memory_sz.get()==True:
+                mz=self.Memory_sz1
+                simplejson.dump(mz, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_command_line.get()==True:
-            pcl=self.proc_command_line1
-            simplejson.dump(pcl,self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_base_adress.get()==True:
+                pba=self.proc_base_adress1
+                simplejson.dump(pba, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_file_path.get()==True:
-            pfp=self.proc_file_path1
-            simplejson.dump(pfp, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_command_line.get()==True:
+                pcl=self.proc_command_line1
+                simplejson.dump(pcl,self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_image_size.get()==True:
-            piz=self.proc_image_size1
-            simplejson.dump(piz, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_file_path.get()==True:
+                pfp=self.proc_file_path1
+                simplejson.dump(pfp, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.p_proc_id.get()==True:
-            ppi=self.proc_p_proc_id1
-            simplejson.dump(ppi, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_image_size.get()==True:
+                piz=self.proc_image_size1
+                simplejson.dump(piz, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_process_id.get()==True:
-            procpi=self.proc_process_id1
-            simplejson.dump(procpi, self.f)
-            self.f.write('\n' + '\n')
+            if self.p_proc_id.get()==True:
+                ppi=self.proc_p_proc_id1
+                simplejson.dump(ppi, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_session_id.get()==True:
-            psi=self.proc_session_id1
-            simplejson.dump(psi, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_process_id.get()==True:
+                procpi=self.proc_process_id1
+                simplejson.dump(procpi, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_threads.get()==True:
-            pt=self.proc_threads1
-            simplejson.dump(pt, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_session_id.get()==True:
+                psi=self.proc_session_id1
+                simplejson.dump(psi, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.proc_memory_usage.get()==True:
-            pmu=self.proc_memory_usage1
-            simplejson.dump(pmu, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_threads.get()==True:
+                pt=self.proc_threads1
+                simplejson.dump(pt, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.T_Stamp.get()==True:
-            TS=self.T_Stamp1
-            simplejson.dump(TS, self.f)
-            self.f.write('\n' + '\n')
+            if self.proc_memory_usage.get()==True:
+                pmu=self.proc_memory_usage1
+                simplejson.dump(pmu, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.ev_ID.get()==True:
-            eID=self.ev_ID1
-            simplejson.dump(eID, self.f)
-            self.f.write('\n' + '\n')
+            if self.T_Stamp.get()==True:
+                TS=self.T_Stamp1
+                simplejson.dump(TS, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.ev_type.get()==True:
-            et=self.ev_type1
-            simplejson.dump(et, self.f)
-            self.f.write('\n' + '\n')
+            if self.ev_ID.get()==True:
+                eID=self.ev_ID1
+                simplejson.dump(eID, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.org.get()==True:
-            orgas=self.org1
-            simplejson.dump(orgas, self.f)
-            self.f.write('\n' + '\n')
+            if self.ev_type.get()==True:
+                et=self.ev_type1
+                simplejson.dump(et, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.platforma.get()==True:
-            platf=self.platforma1
-            simplejson.dump(platf, self.f)
-            self.f.write('\n' + '\n')
+            if self.org.get()==True:
+                orgas=self.org1
+                simplejson.dump(orgas, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.sbnt.get()==True:
-            SBNT=self.sbnt1
-            simplejson.dump(SBNT, self.f)
-            self.f.write('\n' + '\n')
+            if self.platforma.get()==True:
+                platf=self.platforma1
+                simplejson.dump(platf, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.t_stamp.get()==True:
-            ts=self.t_stamp1
-            simplejson.dump(ts, self.f)
-            self.f.write('\n' + '\n')
+            if self.sbnt.get()==True:
+                SBNT=self.sbnt1
+                simplejson.dump(SBNT, self.f)
+                self.f.write('\n' + '\n')
 
-        if self.UNIQUE_ID.get()==True:
-            UID=self.UNIQUE_ID1
-            simplejson.dump(UID, self.f)
-            self.f.write('\n' + '\n')
+            if self.t_stamp.get()==True:
+                ts=self.t_stamp1
+                simplejson.dump(ts, self.f)
+                self.f.write('\n' + '\n')
 
-        time.sleep(2)
-
-        self.text.insert(END, "Columns selected." + '\n')
-
-        self.send_button = Button(self, text="Scan file! ", width=12, command= lambda: Application.start_file_scan(self))
-        self.send_button.grid(row=9, column=3)
-
-        self.f.close()
+            if self.UNIQUE_ID.get()==True:
+                UID=self.UNIQUE_ID1
+                simplejson.dump(UID, self.f)
+                self.f.write('\n' + '\n')
 
 
+
+            self.text.insert(END, "Columns selected." + '\n')
+
+            self.send_button = Button(self, text="Scan file! ", width=12,
+                                      command=lambda: Application.start_file_scan(self))
+            self.send_button.grid(row=9, column=3)
+            self.f.close()
+
+        else:
+            messagebox.showerror("Error", "Import file first!")
 
 
     def start_file_scan(self):
 
         self.text.delete('1.0', END)
 
-        #self.f = open('file.txt', 'w')
-        self.p=pathlib.Path('file.txt')
-        self.s=str(self.p.absolute())
-        self.a=self.s.replace('\\','/')
-        #print(self.a)
-        url = 'https://www.virustotal.com/vtapi/v2/file/scan'
-        params = {'apikey': self.API_KEY}
-        files = {'file': (self.a, open(self.a,'rb'))}
-        self.response=requests.post(url, files=files, params=params)
-        #print(self.response.json())
+        if os.path.isfile(self.f_ab):
+            try:
+                self.hashes = re.findall(r"([a-fA-F\d]{32})", open(self.p).read().lower())
+                print(self.hashes)
+
+            except OSError as err:  # <- naked except is a bad idea
+                showerror("Something went wrong")
+                print("klaida cia ---> ".format(err))
 
         self.text.insert(END, "File is scanning. Please wait... "  + '\n')
 
