@@ -13,6 +13,7 @@ import os
 import tkinter as tk
 import re
 from tkinter import messagebox
+import numpy as np
 
 
 
@@ -38,6 +39,7 @@ class Application(Frame):
             self.API_KEY = '0abb42dfe1d1103b87eb501f5a248380581ea03289f0b2bc165be458d8cef93e'
             self.f = pathlib.Path('file.txt')
             self.f_ab = "";
+            self.virushare = 'VirusShare_'
 
             if os.path.exists(self.f):
                 os.remove(self.f)
@@ -47,83 +49,83 @@ class Application(Frame):
 
             #config checkbutton
             self.config_nr=BooleanVar()
-            Checkbutton(self, text= "Config", variable=self.config_nr, command= self.update_text).grid(row=2, column=0,sticky=W)
+            Checkbutton(self, text= "Config", variable=self.config_nr, command= self.update_text_config_nr).grid(row=2, column=0,sticky=W)
 
             #base_Adress checkbutton
             self.Base_adress=BooleanVar()
-            Checkbutton(self, text= "BASE_ADDRESS", variable=self.Base_adress, command= self.update_text).grid(row=2, column=3,sticky=W)
+            Checkbutton(self, text= "BASE_ADDRESS", variable=self.Base_adress, command= self.update_text_base_adress).grid(row=2, column=3,sticky=W)
 
             #Memory_sz checkbutton
             self.Memory_sz=BooleanVar()
-            Checkbutton(self, text="MEMORY_SIZE", variable=self.Memory_sz, command=self.update_text).grid(row=2, column=8, sticky=W)
+            Checkbutton(self, text="MEMORY_SIZE", variable=self.Memory_sz, command=self.update_text_memory_sz).grid(row=2, column=8, sticky=W)
 
             #proc_base_adress checkbutton
             self.proc_base_adress=BooleanVar()
-            Checkbutton(self, text= "PROCESS.base.BASE_ADDRESS", variable=self.proc_base_adress, command= self.update_text).grid(row=3, column=0,sticky=W)
+            Checkbutton(self, text= "PROCESS.base.BASE_ADDRESS", variable=self.proc_base_adress, command= self.update_text_proc_base_adress).grid(row=3, column=0,sticky=W)
 
             #proc_command_line checkbutton
             self.proc_command_line=BooleanVar()
-            Checkbutton(self, text= "PROCESS.base.COMMAND_LINE", variable=self.proc_command_line, command = self.update_text).grid(row=3, column=3, sticky=W)
+            Checkbutton(self, text= "PROCESS.base.COMMAND_LINE", variable=self.proc_command_line, command = self.update_text_proc_command_line).grid(row=3, column=3, sticky=W)
 
             #proc_file_path checkbutton
             self.proc_file_path=BooleanVar()
-            Checkbutton(self, text="PROCESS.base.FILE_PATH", variable = self.proc_file_path, command = self.update_text).grid(row=3, column=8, sticky=W)
+            Checkbutton(self, text="PROCESS.base.FILE_PATH", variable = self.proc_file_path, command = self.update_text_proc_file_path).grid(row=3, column=8, sticky=W)
 
             #proc_image_size checkbutton
             self.proc_image_size = BooleanVar()
-            Checkbutton(self, text="PROCESS.base.IMAGE_SIZE", variable=self.proc_image_size,command = self.update_text).grid(row=4, column=0, sticky=W)
+            Checkbutton(self, text="PROCESS.base.IMAGE_SIZE", variable=self.proc_image_size,command = self.update_text_proc_image_size).grid(row=4, column=0, sticky=W)
 
             #proc_p_proc_id checkbutton
             self.p_proc_id=BooleanVar()
-            Checkbutton(self, text="PROCESS.base.PARENT_PROCESS_ID", variable=self.p_proc_id,command=self.update_text).grid(row=4, column=3, sticky=W)
+            Checkbutton(self, text="PROCESS.base.PARENT_PROCESS_ID", variable=self.p_proc_id,command=self.update_text_p_proc_id).grid(row=4, column=3, sticky=W)
 
             #proc_process_id checkbutton
             self.proc_process_id=BooleanVar()
-            Checkbutton(self, text="PROCESS.base.PROCESS_ID", variable=self.proc_process_id, command=self.update_text).grid(row=4, column=8, sticky=W)
+            Checkbutton(self, text="PROCESS.base.PROCESS_ID", variable=self.proc_process_id, command=self.update_text_proc_process_id).grid(row=4, column=8, sticky=W)
 
             #proc_session_id checkbutton
             self.proc_session_id=BooleanVar()
-            Checkbutton(self, text="PROCESS.base.SESSION_ID", variable=self.proc_session_id, command=self.update_text).grid(row=5, column=0, sticky=W)
+            Checkbutton(self, text="PROCESS.base.SESSION_ID", variable=self.proc_session_id, command=self.update_text_proc_session_id).grid(row=5, column=0, sticky=W)
 
             #proc_threads checkbutton
             self.proc_threads=BooleanVar()
-            Checkbutton(self, text="PROCESS.base.THREADS", variable=self.proc_threads, command=self.update_text).grid(row=5, column=3, sticky=W)
+            Checkbutton(self, text="PROCESS.base.THREADS", variable=self.proc_threads, command=self.update_text_proc_threads).grid(row=5, column=3, sticky=W)
 
             #proc_memory_usage checkbutton
             self.proc_memory_usage=BooleanVar()
-            Checkbutton(self, text="PROCESS.hcp.MEMORY_USAGE", variable=self.proc_memory_usage, command=self.update_text).grid(row=5, column=8, sticky=W)
+            Checkbutton(self, text="PROCESS.hcp.MEMORY_USAGE", variable=self.proc_memory_usage, command=self.update_text_proc_memory_usage).grid(row=5, column=8, sticky=W)
 
             #T_Stamp checkbutton
             self.T_Stamp=BooleanVar()
-            Checkbutton(self, text="TIMESTAMP", variable=self.T_Stamp, command=self.update_text).grid(row=6, column=0, sticky=W)
+            Checkbutton(self, text="TIMESTAMP", variable=self.T_Stamp, command=self.update_text_t_stap).grid(row=6, column=0, sticky=W)
 
             #ev_ID checkbutton
             self.ev_ID=BooleanVar()
-            Checkbutton(self, text="eventID", variable=self.ev_ID, command=self.update_text).grid(row=6, column=3, sticky=W)
+            Checkbutton(self, text="eventID", variable=self.ev_ID, command=self.update_text_ev_id).grid(row=6, column=3, sticky=W)
 
             #ev_type checkbutton
             self.ev_type=BooleanVar()
-            Checkbutton(self, text="eventType", variable=self.ev_type, command=self.update_text).grid(row=6, column=8, sticky=W)
+            Checkbutton(self, text="eventType", variable=self.ev_type, command=self.update_text_ev_type).grid(row=6, column=8, sticky=W)
 
             #org checkbutton
             self.org=BooleanVar()
-            Checkbutton(self, text="org", variable=self.org, command=self.update_text).grid(row=7, column=0, sticky=W)
+            Checkbutton(self, text="org", variable=self.org, command=self.update_text_self_org).grid(row=7, column=0, sticky=W)
 
             #platforma checkbutton
             self.platforma=BooleanVar()
-            Checkbutton(self, text="platforma", variable=self.platforma, command=self.update_text).grid(row=7, column=3, sticky=W)
+            Checkbutton(self, text="platforma", variable=self.platforma, command=self.update_text_platforma).grid(row=7, column=3, sticky=W)
 
             #sbnt checkbutton
             self.sbnt=BooleanVar()
-            Checkbutton(self, text="subnet", variable=self.sbnt, command=self.update_text).grid(row=7, column=8, sticky=W)
+            Checkbutton(self, text="subnet", variable=self.sbnt, command=self.update_text_sbnt).grid(row=7, column=8, sticky=W)
 
             #t_stamp checkbutton
             self.t_stamp=BooleanVar()
-            Checkbutton(self, text="timestamp", variable=self.t_stamp, command=self.update_text).grid(row=8, column=0, sticky=W)
+            Checkbutton(self, text="timestamp", variable=self.t_stamp, command=self.update_text_t_stamp).grid(row=8, column=0, sticky=W)
 
             #UNIQUE_ID checkbutton
             self.UNIQUE_ID=BooleanVar()
-            Checkbutton(self, text="uniqueID", variable=self.UNIQUE_ID, command=self.update_text).grid(row=8, column=3, sticky=W)
+            Checkbutton(self, text="uniqueID", variable=self.UNIQUE_ID, command=self.update_text_unique_id).grid(row=8, column=3, sticky=W)
 
 
 
@@ -188,50 +190,148 @@ class Application(Frame):
                 print("klaida cia ---> ".format(err))
         #print(self.Memory_sz1)
 
-    def update_text(self):
+    def update_text_config_nr(self):
 
         if self.config_nr.get():
             print(self.config_nr1)
+            self.json_config = json.dumps(self.config_nr1)
+            if self.virushare in self.json_config:
+                messagebox.showinfo("Information", "Hash found! ")
+                print(self.config_nr1)
+
+    def update_text_base_adress(self):
+
         if self.Base_adress.get():
-            #ba=','.join(self.Base_adress1)
-            #tekstas +=ba
-            print(self.Base_adress1)
+            self.json_Base_adress = json.dumps(self.Base_adress1)
+            if self.virushare in self.json_Base_adress:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_memory_sz(self):
+
         if self.Memory_sz.get():
-            print(self.Memory_sz1)
+            self.json_memory_sz = json.dumps(self.Memory_sz1)
+            if self.virushare in self.json_memory_sz:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_base_adress(self):
+
         if self.proc_base_adress.get():
-            print(self.proc_base_adress1)
+            self.json_proc_base_adres = json.dumps(self.proc_base_adress1)
+            if self.virushare in self.json_proc_base_adres:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_command_line(self):
+
         if self.proc_command_line.get():
-            print(self.proc_command_line1)
+            self.json_proc_command_line = json.dumps(self.proc_command_line1)
+            if self.virushare in self.json_proc_command_line:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_file_path(self):
+
         if self.proc_file_path.get():
-            print(self.proc_file_path1)
+            self.json_proc_file_path = json.dumps(self.proc_file_path1)
+            if self.virushare in self.json_proc_file_path:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_image_size(self):
+
         if self.proc_image_size.get():
-            print(self.proc_image_size1)
+            self.json_proc_image_size = json.dumps(self.proc_image_size1)
+            if self.virushare in self.json_proc_image_size:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_p_proc_id(self):
+
         if self.p_proc_id.get():
-            print(self.proc_p_proc_id1)
+            self.json_proc_p_proc_id = json.dumps(self.proc_p_proc_id1)
+            if self.virushare in self.json_proc_p_proc_id:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_process_id(self):
+
         if self.proc_process_id.get():
-            print(self.proc_process_id1)
+            self.json_proc_process_id = json.dumps(self.proc_process_id1)
+            if self.virushare in self.json_proc_process_id:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_session_id(self):
+
         if self.proc_session_id.get():
-            print(self.proc_process_id1)
+            self.json_proc_session_id = json.dumps(self.proc_session_id1)
+            if self.virushare in self.json_proc_session_id:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_threads(self):
+
         if self.proc_threads.get():
-            print(self.proc_threads1)
+            self.json_proc_threads = json.dumps(self.proc_threads1)
+            if self.virushare in self.json_proc_threads:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_proc_memory_usage(self):
+
         if self.proc_memory_usage.get():
-            print(self.proc_memory_usage1)
+            self.json_proc_memory_usage = json.dumps(self.proc_memory_usage1)
+            if self.virushare in self.json_proc_memory_usage:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_t_stap(self):
+
         if self.T_Stamp.get():
-            print(self.T_Stamp1)
+            self.json_t_stamp = json.dumps(self.T_Stamp1)
+            if self.virushare in self.json_t_stamp:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_ev_id(self):
+
         if self.ev_ID.get():
-            print(self.ev_ID1)
+            self.json_ev_ID = json.dumps(self.ev_ID1)
+            if self.virushare in self.json_ev_ID:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_ev_type(self):
+
         if self.ev_type.get():
-            print(self.ev_type1)
+            self.json_ev_type = json.dumps(self.ev_type1)
+            if self.virushare in self.json_ev_type:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_self_org(self):
+
         if self.org.get():
-            print(self.org1)
+            self.json_org = json.dumps(self.org1)
+            if self.virushare in self.json_org:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_platforma(self):
+
         if self.platforma.get():
-            print(self.platforma1)
+            self.json_platforma = json.dumps(self.platforma1)
+            if self.virushare in self.json_platforma:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_sbnt(self):
+
         if self.sbnt.get():
-            print(self.sbnt1)
+            self.json_sbnt = json.dumps(self.sbnt1)
+            if self.virushare in self.json_sbnt:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_t_stamp(self):
+
         if self.t_stamp.get():
-            print(self.t_stamp1)
+            self.json_t_stamp = json.dumps(self.t_stamp1)
+            if self.virushare in self.json_t_stamp:
+                messagebox.showinfo("Information", "Hash found! ")
+
+    def update_text_unique_id(self):
+
         if self.UNIQUE_ID.get():
-            print(self.UNIQUE_ID1)
+            self.json_UNIQUE_ID = json.dumps(self.UNIQUE_ID1)
+            if self.virushare in self.json_UNIQUE_ID:
+                messagebox.showinfo("Information", "Hash found! ")
+
 
         #self.result.delete(0.0, END)
         #self.result.insert(0.0, tekstas)
