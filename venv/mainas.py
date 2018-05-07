@@ -31,7 +31,7 @@ class Application(Frame):
             menu.add_cascade(label="File", menu=subMenu)
             subMenu.add_cascade(label="Scan file", command=lambda: Application.scan_file(self))
             subMenu.add_cascade(label="Import file", command=lambda : Application.choose_file(self))
-            subMenu.add_cascade(label="Test")
+            subMenu.add_cascade(label="Scan domain", command = lambda : Application.scan_domain(self))
             subMenu.add_command(label="Exit", command=exit)
             subMenu.add_separator()
 
@@ -139,21 +139,21 @@ class Application(Frame):
 
         self.text.delete('1.0', END)
 
-        fname = askopenfilename(filetypes=(("Excel log files", "*.csv"),
+        self.fname = askopenfilename(filetypes=(("Excel log files", "*.csv"),
                                            ("Json files", "*.JSON;*.htm"),
                                            ("All files", "*.*")))
 
-        Label(self, text=fname).grid(row=0, column=0, sticky=W)
+        Label(self, text=self.fname).grid(row=0, column=0, sticky=W)
 
         columns = defaultdict(list)
-        with open(fname) as f:
+        with open(self.fname) as f:
             reader = csv.DictReader(f)
             for row in reader:
                 for (k, v) in row.items():
                     columns[k].append(v)
 
 
-        if fname:
+        if self.fname:
             try:
 
                 self.config_nr1 = columns['config']
@@ -184,7 +184,7 @@ class Application(Frame):
                 print(self.f_ab)
 
             except OSError as err:  # <- naked except is a bad idea
-                showerror("Open Source File", "Failed to read file\n'%s'" % fname)
+                showerror("Open Source File", "Failed to read file\n'%s'" % self.fname)
                 print("klaida cia ---> ".format(err))
         #print(self.Memory_sz1)
 
@@ -393,7 +393,73 @@ class Application(Frame):
         self.detailed_hashes_text = Text(self.root3, heigh=10, width=80)
         self.detailed_hashes_text.pack()
 
+        self.detailed_hashes_text.insert(END, 'Hashes found: ' + '\n')
         self.detailed_hashes_text.insert(END, '\n'.join(self.hashes))
+
+        self.write_to_csv_button = Button(self.root3, text = "print to csv", width = 12, command = lambda: Application.print_to_csv(self))
+        self.write_to_csv_button.pack()
+
+
+    def scan_domain(self):
+
+        self.root4 = tk.Tk()
+
+        self.root4.title("Domain scan")
+        self.root4.geometry("400x330")
+
+        self.t = Text(self.root4, height = 1, width=40)
+        self.t.pack()
+
+        self.domain_scan_button = Button(self.root4,text = "Scan now!", width=12, command = lambda : Application.scan_domain_response(self))
+        self.domain_scan_button.pack()
+
+        self.t_response = Text(self.root4, height=16, width=40)
+        self.t_response.pack()
+
+    def scan_domain_response(self):
+
+
+
+        self.t_response.delete('1.0', END)
+
+        self.domain = self.t.get('1.0','end-1c')
+        print(self.domain)
+
+
+        params = {'domain' : self.domain , 'apikey' : self.API_KEY}
+        headers = {
+            "Accept-Encoding": "gzip, deflate",
+            "User-Agent": "gzip,Gertautas"
+
+        }
+
+
+        self.response_domain = requests.get('https://www.virustotal.com/vtapi/v2/domain/report', params=params, headers=headers)
+        self.response_domain_json = self.response_domain.json()
+
+        #print(self.response_domain_json)
+
+        self.t_response.insert(END, self.response_domain_json)
+
+
+
+    def print_to_csv(self):
+
+        if self.fname:
+            try:
+                print(self.hashes)
+                with open(self.fname, 'a') as csvFile:
+                    writer = csv.writer(csvFile)
+                    writer.writerow(self.hashes)
+
+                    messagebox.showinfo("Information", "Information successfully printed to file! ")
+
+                    csvFile.close()
+            except OSError as err:  # <- naked except is a bad idea
+                showerror("OOPS!", "Something went wrong" % self.fname)
+                print("klaida cia ---> ".format(err))
+
+
 
 
     def start_file_scan(self):
