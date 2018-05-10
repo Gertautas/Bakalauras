@@ -516,14 +516,16 @@ class Application(Frame):
         self.t_response = Text(self.root4, height=16, width=40)
         self.t_response.pack()
 
+       
+
     def scan_domain_response(self):
 
 
 
-        self.t_response.delete('1.0', END)
+        self.t_response.delete(1.0, END)
 
         self.domain = self.t.get('1.0','end-1c')
-        print(self.domain)
+        #print(self.domain)
 
 
         params = {'domain' : self.domain , 'apikey' : self.API_KEY}
